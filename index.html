@@ -1,0 +1,711 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Robux Lobby</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    color: white;
+    background:
+        radial-gradient(circle at 20% 20%, #3b82f6 0%, transparent 30%),
+        radial-gradient(circle at 80% 80%, #7c3aed 0%, transparent 30%),
+        linear-gradient(135deg, #071a3d, #111b45, #251052);
+}
+
+.fondo {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.bloque {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 25px;
+    transform: rotate(25deg);
+    animation: flotar 8s infinite ease-in-out;
+}
+
+.b1 { top: 8%; left: 5%; }
+.b2 { top: 65%; left: 12%; animation-delay: 2s; }
+.b3 { top: 15%; right: 8%; animation-delay: 1s; }
+.b4 { bottom: 8%; right: 12%; animation-delay: 3s; }
+
+.b5 {
+    top: 45%;
+    left: 45%;
+    width: 70px;
+    height: 70px;
+    animation-delay: 4s;
+}
+
+.b6 {
+    bottom: 25%;
+    right: 40%;
+    width: 60px;
+    height: 60px;
+    animation-delay: 5s;
+}
+
+@keyframes flotar {
+    0%, 100% {
+        transform: translateY(0) rotate(25deg);
+    }
+    50% {
+        transform: translateY(-25px) rotate(40deg);
+    }
+}
+
+.particula {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 50%;
+    animation: subir 6s infinite linear;
+}
+
+.p1 { left: 20%; bottom: -10px; }
+.p2 { left: 50%; bottom: -10px; animation-delay: 2s; }
+.p3 { left: 75%; bottom: -10px; animation-delay: 4s; }
+.p4 { left: 90%; bottom: -10px; animation-delay: 1s; }
+
+@keyframes subir {
+    from {
+        transform: translateY(0);
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+    }
+    to {
+        transform: translateY(-110vh);
+        opacity: 0;
+    }
+}
+
+.pantalla {
+    width: 100%;
+    max-width: 520px;
+    padding: 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.caja {
+    padding: 35px 28px;
+    border-radius: 25px;
+    background: rgba(8, 20, 50, 0.78);
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow:
+        0 25px 60px rgba(0,0,0,0.45),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+    backdrop-filter: blur(15px);
+    text-align: center;
+}
+
+.logo {
+    width: 85px;
+    height: 85px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    font-size: 42px;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+}
+
+h1 {
+    font-size: 32px;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+.subtitulo {
+    color: #cbd5e1;
+    font-size: 15px;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.campo {
+    text-align: left;
+    margin-bottom: 17px;
+}
+
+.campo label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #dbeafe;
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 15px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.15);
+    outline: none;
+    background: rgba(255,255,255,0.08);
+    color: white;
+    font-size: 16px;
+}
+
+input::placeholder {
+    color: #94a3b8;
+}
+
+input:focus {
+    border-color: #60a5fa;
+    background: rgba(255,255,255,0.12);
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+}
+
+button {
+    width: 100%;
+    margin-top: 5px;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    box-shadow: 0 10px 25px rgba(37,99,235,0.3);
+    transition: 0.2s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+}
+
+.nota {
+    margin-top: 18px;
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+#segundaPantalla {
+    display: none;
+}
+
+.dinero {
+    font-size: 55px;
+    margin-bottom: 10px;
+}
+
+.perfil {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-align: left;
+    padding: 15px;
+    margin: 22px 0;
+    border-radius: 15px;
+    background: rgba(255,255,255,0.07);
+}
+
+.avatar {
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(59,130,246,0.25);
+    border-radius: 13px;
+    font-size: 27px;
+}
+
+.datos {
+    flex: 1;
+}
+
+.datos strong {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.datos span {
+    display: block;
+    color: #94a3b8;
+    font-size: 13px;
+    margin-top: 2px;
+}
+
+.estado {
+    color: #93c5fd;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.loader {
+    width: 45px;
+    height: 45px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    border: 4px solid rgba(255,255,255,0.15);
+    border-top-color: #60a5fa;
+    animation: girar 1s linear infinite;
+}
+
+@keyframes girar {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.barra {
+    width: 100%;
+    height: 9px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 20px 0;
+}
+
+#progreso {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    transition: width 1s linear;
+}
+
+#contador {
+    font-size: 42px;
+    font-weight: bold;
+    margin: 10px 0;
+    letter-spacing: 2px;
+}
+
+#mensajeFinal {
+    display: none;
+    margin-top: 25px;
+    padding: 20px;
+    border-radius: 16px;
+    background: rgba(59,130,246,0.12);
+    border: 1px solid rgba(96,165,250,0.2);
+    line-height: 1.5;
+}
+
+@media (max-width: 500px) {
+    .caja {
+        padding: 28px 20px;
+    }
+
+    h1 {
+        font-size: 27px;
+    }
+
+    #contador {
+        font-size: 36px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="fondo">
+    <div class="bloque b1"></div>
+    <div class="bloque b2"></div>
+    <div class="bloque b3"></div>
+    <div class="bloque b4"></div>
+    <div class="bloque b5"></div>
+    <div class="bloque b6"></div>
+
+    <div class="particula p1"></div>
+    <div class="particula p2"></div>
+    <div class="particula p3"></div>
+    <div class="particula p4"></div>
+</div>
+
+<div class="pantalla">
+
+    <!-- PRIMERA PANTALLA -->
+    <div class="caja" id="primeraPantalla">
+
+        <div class="logo">🎮</div>
+
+        <h1>ROBUX LOBBY</h1>
+
+        <p class="subtitulo">
+            Introduce tu nombre e ID de jugador para comenzar el proceso.
+        </p>
+
+        <div class="campo">
+            <label for="playerName">Nombre de jugador</label>
+            <input
+                type="text"
+                id="playerName"
+                placeholder="Escribe tu nombre"
+                autocomplete="off"
+            >
+        </div>
+
+        <div class="campo">
+            <label for="playerID">ID de jugador</label>
+            <input
+                type="text"
+                id="playerID"
+                placeholder="Escribe tu ID"
+                autocomplete="off"
+            >
+        </div>
+
+        <button onclick="continuar()">
+            CONTINUAR
+        </button>
+
+        <p class="nota">
+            No introduzcas contraseñas ni información personal.
+        </p>
+
+    </div>
+
+
+    <!-- SEGUNDA PANTALLA -->
+    <div class="caja" id="segundaPantalla">
+
+        <div class="dinero">💰</div>
+
+        <h1>Procesando Robux</h1>
+
+        <p class="subtitulo">
+            Estamos preparando el proceso...
+        </p>
+
+        <div class="perfil">
+
+            <div class="avatar">
+                👤
+            </div>
+
+            <div class="datos">
+
+                <strong id="usuarioNombre">
+                    Nombre
+                </strong>
+
+                <span id="usuarioID">
+                    ID: -
+                </span>
+
+                <span>
+                    Cuenta seleccionada
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="estado" id="estado">
+            Preparando solicitud...
+        </div>
+
+        <div class="loader" id="loader"></div>
+
+        <div class="barra">
+            <div id="progreso"></div>
+        </div>
+
+        <div id="contador">
+            03:00
+        </div>
+
+        <div id="mensajeFinal">
+
+            <strong>😂 ¡ERA UNA BROMA!</strong>
+
+            <br><br>
+
+            No se han enviado Robux.
+
+            <br>
+
+            Si quieres Robux, dile a Luis JAJAJA 😂
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+let tiempo = 180;
+let intervalo;
+
+// Control del audio
+let audioActivo = false;
+let inicioAudio = 0;
+let vozActual = null;
+
+
+/* Buscar una voz española disponible */
+function buscarVoz() {
+
+    const voces = speechSynthesis.getVoices();
+
+    vozActual =
+        voces.find(v => v.lang === "es-ES") ||
+        voces.find(v => v.lang.startsWith("es")) ||
+        voces[0] ||
+        null;
+}
+
+
+/* Hablar "Troyanos.exe" */
+function decirTroyanos() {
+
+    if (!audioActivo) return;
+
+    const transcurrido = Date.now() - inicioAudio;
+
+    // 60 segundos = 60000 milisegundos
+    if (transcurrido >= 60000) {
+        detenerAudio();
+        return;
+    }
+
+    const frase = new SpeechSynthesisUtterance("Troyanos punto exe");
+
+    frase.lang = "es-ES";
+
+    // Velocidad parecida a una voz automática
+    frase.rate = 0.9;
+
+    // Tono normal
+    frase.pitch = 1;
+
+    // Volumen máximo permitido por SpeechSynthesis
+    frase.volume = 1;
+
+    if (vozActual) {
+        frase.voice = vozActual;
+    }
+
+    frase.onend = function() {
+
+        if (audioActivo) {
+            decirTroyanos();
+        }
+
+    };
+
+    speechSynthesis.speak(frase);
+}
+
+
+/* Empezar audio */
+function iniciarAudio() {
+
+    if (!("speechSynthesis" in window)) {
+        return;
+    }
+
+    speechSynthesis.cancel();
+
+    buscarVoz();
+
+    audioActivo = true;
+    inicioAudio = Date.now();
+
+    decirTroyanos();
+
+}
+
+
+/* Detener audio */
+function detenerAudio() {
+
+    audioActivo = false;
+
+    if ("speechSynthesis" in window) {
+        speechSynthesis.cancel();
+    }
+
+}
+
+
+/* Botón CONTINUAR */
+function continuar() {
+
+    const nombre =
+        document.getElementById("playerName").value.trim();
+
+    const id =
+        document.getElementById("playerID").value.trim();
+
+    if (nombre === "") {
+        alert("Escribe tu nombre de jugador.");
+        return;
+    }
+
+    if (id === "") {
+        alert("Escribe tu ID de jugador.");
+        return;
+    }
+
+    document.getElementById("usuarioNombre").textContent =
+        nombre;
+
+    document.getElementById("usuarioID").textContent =
+        "ID: " + id;
+
+    document.getElementById("primeraPantalla").style.display =
+        "none";
+
+    document.getElementById("segundaPantalla").style.display =
+        "block";
+
+    // Comienza la voz
+    iniciarAudio();
+
+    // Comienza el contador
+    iniciarContador();
+}
+
+
+/* Contador */
+function iniciarContador() {
+
+    tiempo = 180;
+
+    clearInterval(intervalo);
+
+    actualizarPantalla();
+
+    intervalo = setInterval(function() {
+
+        tiempo--;
+
+        actualizarPantalla();
+
+        if (tiempo <= 0) {
+
+            clearInterval(intervalo);
+
+            detenerAudio();
+
+            document.getElementById("loader").style.display =
+                "none";
+
+            document.getElementById("estado").style.display =
+                "none";
+
+            document.querySelector(".barra").style.display =
+                "none";
+
+            document.getElementById("contador").style.display =
+                "none";
+
+            document.getElementById("mensajeFinal").style.display =
+                "block";
+        }
+
+    }, 1000);
+}
+
+
+/* Actualizar contador */
+function actualizarPantalla() {
+
+    let minutos = Math.floor(tiempo / 60);
+
+    let segundos = tiempo % 60;
+
+    minutos = String(minutos).padStart(2, "0");
+
+    segundos = String(segundos).padStart(2, "0");
+
+    document.getElementById("contador").textContent =
+        minutos + ":" + segundos;
+
+
+    const porcentaje =
+        (tiempo / 180) * 100;
+
+    document.getElementById("progreso").style.width =
+        porcentaje + "%";
+
+
+    const estado =
+        document.getElementById("estado");
+
+
+    if (tiempo > 150) {
+
+        estado.textContent =
+            "Verificando información...";
+
+    } else if (tiempo > 120) {
+
+        estado.textContent =
+            "Preparando solicitud...";
+
+    } else if (tiempo > 90) {
+
+        estado.textContent =
+            "Procesando datos...";
+
+    } else if (tiempo > 60) {
+
+        estado.textContent =
+            "Comprobando disponibilidad...";
+
+    } else if (tiempo > 30) {
+
+        estado.textContent =
+            "Finalizando proceso...";
+
+    } else {
+
+        estado.textContent =
+            "Casi terminado...";
+
+    }
+
+}
+
+
+/* Cargar voces cuando el navegador las tenga disponibles */
+if ("speechSynthesis" in window) {
+
+    speechSynthesis.onvoiceschanged =
+        buscarVoz;
+
+    buscarVoz();
+
+}
+
+</script>
+
+</body>
+</html>
+```
